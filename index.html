@@ -1,220 +1,451 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>小さい成功体験アプリ（イメージ）</title>
-<style>
-
+  <meta charset="UTF-8">
+  <title>毎日の小さな成功アプリ</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1, user-scalable=no">
+  <style>
     body {
-
-      background: #f2fbf1;
-
-      font-family: 'メイリオ', sans-serif;
-
+      background: linear-gradient(135deg, #e8f6ef 0%, #b3e5fc 100%);
+      min-height: 100vh;
+      font-family: 'メイリオ', 'Hiragino Sans', sans-serif;
+      margin: 0; padding: 0; box-sizing: border-box;
     }
-
-    .container {
-
-      max-width: 400px;
-
-      margin: 40px auto;
-
-      background: #fff;
-
-      border-radius: 10px;
-
-      box-shadow: 0 4px 20px #d6e5d5;
-
-      padding: 2em;
-
-    }
-
-    h1 {
-
-      text-align: center;
-
-      color: #388e3c;
-
-      margin-bottom: 1.2em;
-
-    }
-
-    form {
-
+    .app-frame {
+      max-width: 420px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: #f8fefe;
+      box-shadow: 0 2px 18px 0 #aacbcc88;
+      border-radius: 0 0 32px 32px;
       display: flex;
-
-      gap: 0.5em;
-
-      margin-bottom: 1.5em;
-
+      flex-direction: column;
+      position: relative;
     }
-
-    input[type="text"] {
-
-      flex: 1;
-
-      padding: 0.6em;
-
-      font-size: 1em;
-
-      border: 1px solid #bbe2be;
-
-      border-radius: 5px;
-
-    }
-
-    button {
-
-      background: #388e3c;
-
+    header {
+      background: linear-gradient(90deg,#22c1c3 0%, #62ebb4 100%);
       color: #fff;
-
-      border: none;
-
-      border-radius: 5px;
-
-      padding: 0.6em 1em;
-
-      font-size: 1em;
-
-      cursor: pointer;
-
-      transition: background 0.2s;
-
-    }
-
-    button:hover {
-
-      background: #25672a;
-
-    }
-
-    ul {
-
-      margin: 0;
-
-      padding: 0;
-
-      list-style: none;
-
-    }
-
-    li {
-
-      background: #f5fff4;
-
-      margin-bottom: 0.5em;
-
-      padding: 0.7em 1em;
-
-      border-radius: 6px;
-
-      display: flex;
-
-      align-items: center;
-
-      font-size: 1.05em;
-
-      border-left: 5px solid #a6e8b7;
-
-      transition: background 0.3s;
-
-    }
-
-    li.checked {
-
-      background: #e0f8eb;
-
-      text-decoration: line-through;
-
-      opacity: 0.7;
-
-    }
-
-    .success-label {
-
-      margin-left: 0.5em;
-
-      color: #388e3c;
-
+      text-align: center;
+      padding-top: env(safe-area-inset-top, 32px);
+      padding-bottom: 20px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 4px 12px #aee1f199;
       font-weight: bold;
-
-      font-size: 0.95em;
-
+      letter-spacing: 0.08em;
+      font-size: 1.4em;
+      position: sticky;
+      top: 0;
+      z-index: 2;
     }
-</style>
+    main {
+      flex:1 1 auto;
+      margin-bottom: 60px;
+      min-height: 300px;
+    }
+    .view { display: none; min-height: 300px; }
+    .view.active { display: block; }
+    .success-list-section { padding:0 20px; }
+    .motiv {
+      text-align: center;
+      color: #43b56b;
+      font-size: 1em;
+      margin: 22px 0 12px 0;
+      padding-top: 10px;
+      font-family: 'Meiryo', sans-serif;
+      letter-spacing: 0.015em;
+    }
+    .input-bar {
+      display: flex; gap: 10px;
+      padding: 14px 9px 8px 9px;
+      position: sticky; top: 52px;
+      background: #f8fefeec; z-index: 1;
+      border-radius: 18px;
+    }
+    .input-bar input[type="text"] {
+      flex: 1;
+      font-size: 1.05em;
+      border: none; border-radius: 10px;
+      background: #f2fdf6;
+      padding: 0.9em 1em;
+      box-shadow: 0 2px 4px #e0f5f2;
+      outline: none; transition: box-shadow 0.2s;
+    }
+    .input-bar button {
+      background: linear-gradient(120deg,#62ebb4 50%, #22c1c3 100%);
+      color: #fff;
+      border-radius: 10px;
+      border: none; font-size: 1.05em;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #b2dfdb50;
+      padding: 0.9em 1em; cursor: pointer;
+      transition: opacity 0.2s; flex-shrink: 0;
+    }
+    .input-bar button:active { opacity: 0.7; }
+
+    ul.success-list { margin:0; padding:0; list-style:none;}
+    li.success-item {
+      margin-bottom: 14px;
+      display: flex; align-items: center;
+      background: #ecfbf5;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px #b2f3df33;
+      padding: 15px 14px;
+      font-size: 1.05em;
+      transition: background 0.3s;
+      position: relative; min-height: 35px;
+    }
+    li.success-item.checked {
+      background: #caefda;
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+    li.success-item input[type="checkbox"] {
+      appearance: none;
+      width: 22px; height: 22px;
+      margin-right: 13px;
+      border-radius: 50%;
+      border: 2px solid #22c1c3;
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    li.success-item input[type="checkbox"]:checked {
+      background: #62ebb4; border-color: #62ebb4;
+    }
+    li.success-item input[type="checkbox"]:checked:after {
+      content: '✓'; color: #fff; font-weight: bold;
+      position: absolute; left: 5px; top: 0px; font-size: 1.09em;
+    }
+    .success-label {
+      background: #62ebb4; color: #fff;
+      border-radius: 9px;
+      font-weight: bold; font-size: 0.88em;
+      margin-left: auto; padding: 4px 9px;
+      display: none; transition: opacity 0.2s;
+    }
+    li.success-item.checked .success-label {
+      display: inline-block; opacity: 1;
+    }
+
+    /* ------- 達成数画面 ------- */
+    .achievement-section {
+      padding: 30px 16px 10px 16px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .achieve-count-box {
+      background: linear-gradient(95deg, #62ebb499 70%, #2ddcdf99 100%);
+      color: #17916e; box-shadow:0 2px 18px #8be7d433;
+      border-radius: 18px; padding: 20px 34px;
+      font-size: 2.2em; font-weight:bold; margin-bottom:16px;
+      text-align: center;
+      letter-spacing: 0.03em;
+      min-width: 110px;
+    }
+    .achieve-label {
+      color: #118c61; margin-bottom: 10px;
+      font-size: 1.05em; text-align:center;
+    }
+    .history-title {
+      text-align: left; font-weight: bold; color: #25b792;
+      font-size: 1.1em; margin: 22px 2px 14px 5px;
+      width: 100%;
+    }
+    ul.achieve-history {
+      width: 100%; max-height: 320px; overflow-y: auto;
+      list-style: none; margin: 0; padding: 0;
+      background: #f7fdfa; border-radius:16px;
+      box-shadow: 0 1px 7px #b9f3e524;
+      font-size: 1.01em;
+    }
+    li.achieve-hist-item {
+      padding: 12px 15px 11px 15px;
+      border-bottom: 1px solid #d0f6eb40;
+      display: flex; justify-content: space-between;
+      align-items: center;
+      letter-spacing: 0.02em;
+    }
+    li.achieve-hist-item:last-child { border-bottom:none;}
+    .progress-today {
+      font-size: 0.95em; margin-bottom: 6px;
+      color:#3fc88c
+    }
+    .hist-date {
+      font-size: 0.89em; color:#71bfa2; margin-left: 7px;
+    }
+    /* ---------- 振り返り画面 ---------- */
+    .reflect-section {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 32px 16px 20px 16px;
+      min-height: 350px;
+    }
+    .reflect-label {
+      color: #118c61;
+      font-size: 1.15em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .ai-comment-area {
+      margin: 16px 0 20px 0;
+      background: #ecfbf5;
+      border-radius: 18px;
+      min-height: 60px;
+      box-shadow: 0 2px 13px #89e1c624;
+      padding: 16px 19px;
+      max-width: 345px;
+      font-size: 1.1em;
+      color: #24977d;
+      transition: box-shadow 0.18s;
+      position: relative;
+      text-align: left;
+      white-space: pre-line;
+    }
+    .ai-face {
+      font-size: 2.2em;
+      position:absolute; right: 15px; bottom: 7px; opacity: 0.7;
+      pointer-events: none;
+    }
+    .reflect-btn {
+      background: linear-gradient(120deg,#62ebb4 60%, #22c1c3 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 1.13em;
+      padding: 0.7em 2.2em;
+      box-shadow: 0 2px 7px #b2dfdb50;
+      cursor: pointer;
+      margin-bottom: 6px;
+      margin-top: 10px;
+      letter-spacing: 0.06em;
+      transition: opacity 0.2s;
+    }
+    .reflect-btn:active{ opacity: 0.7;}
+    /* ---------- ナビゲーションバー ---------- */
+    .nav-bar {
+      position: fixed;
+      left: 50%; bottom: 0;
+      transform: translateX(-50%);
+      width: 100%; max-width: 420px;
+      background: #e6fcf3;
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 0 14px #7fe0c640;
+      display: flex; justify-content: space-around; align-items: center;
+      min-height: 55px; z-index: 10;
+      font-size: 1.1em; color: #1ca57a;
+      user-select: none;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center;
+      color: #25b792; opacity: 0.7;
+      font-size: 0.82em; cursor: pointer;
+      transition: opacity 0.18s;
+    }
+    .nav-item.current {
+      opacity: 1; color: #17916e; font-weight: bold;
+    }
+    .nav-item span {
+      font-size: 1.6em; margin-bottom: 3px;
+    }
+    @media (max-width: 520px) {
+      .app-frame, .nav-bar { max-width: 100vw;}
+      .success-list-section { padding-right:8px; padding-left:8px;}
+      .achievement-section, .reflect-section {padding-left: 3px;padding-right: 3px;}
+      .input-bar {padding: 11px 2px 4px 2px;}
+      .ai-comment-area {padding: 15px 9px;}
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-<h1>小さいことから<br>はじめよう</h1>
-<form id="add-form" autocomplete="off">
-<input type="text" id="input-task" placeholder="例: 朝ごはんを食べた" required>
-<button type="submit">追加</button>
-</form>
-<ul id="success-list">
-<!-- 成功体験リストが入ります -->
-</ul>
-</div>
-<script>
-
-    const form = document.getElementById('add-form');
-
-    const input = document.getElementById('input-task');
-
-    const list = document.getElementById('success-list');
- 
-    form.addEventListener('submit', function(e) {
-
-      e.preventDefault();
-
-      addSuccess(input.value);
-
-      input.value = '';
-
-      input.focus();
-
-    });
- 
-    function addSuccess(text) {
-
-      const li = document.createElement('li');
-
-      const checkbox = document.createElement('input');
-
-      checkbox.type = 'checkbox';
-
-      checkbox.style.marginRight = '0.7em';
-
-      checkbox.addEventListener('change', function () {
-
-        li.classList.toggle('checked', this.checked);
-
-      });
-
-      li.appendChild(checkbox);
-
-      li.appendChild(document.createTextNode(text));
-
-      const label = document.createElement('span');
-
-      label.textContent = '達成！';
-
-      label.className = 'success-label';
-
-      label.style.display = 'none';
-
-      li.appendChild(label);
-
-      checkbox.addEventListener('change', function () {
-
-        label.style.display = this.checked ? '' : 'none';
-
-      });
-
-      list.prepend(li);
-
+  <div class="app-frame">
+    <header>小さい成功を<br>積み重ねよう</header>
+    <main>
+      <!-- リスト画面 -->
+      <section id="view-list" class="view active">
+        <div class="success-list-section">
+          <div class="motiv">🌱今日もできたことを記録しよう！</div>
+          <form class="input-bar" id="add-form" autocomplete="off">
+            <input type="text" id="input-task" placeholder="例：朝ごはんを食べた" maxlength="40" required>
+            <button type="submit">追加</button>
+          </form>
+          <ul class="success-list" id="success-list"></ul>
+        </div>
+      </section>
+      <!-- 達成数・履歴画面 -->
+      <section id="view-achieve" class="view">
+        <div class="achievement-section">
+          <div class="achieve-label">今までの達成数</div>
+          <div class="achieve-count-box" id="achieve-count">0</div>
+          <div class="progress-today" id="achieve-today"></div>
+          <div class="history-title">これまでに達成したこと</div>
+          <ul class="achieve-history" id="achieve-history">
+          </ul>
+        </div>
+      </section>
+      <!-- 振り返り画面：AIコメント -->
+      <section id="view-reflect" class="view">
+        <div class="reflect-section">
+          <div class="reflect-label">
+            振り返り・AIからのコメント
+          </div>
+          <button type="button" class="reflect-btn" id="reflect-btn">AIにコメントしてもらう</button>
+          <div class="ai-comment-area" id="ai-comment-area">
+            振り返りボタンを押すと、AIからのコメントがここに表示されます🍀
+            <span class="ai-face">🤖</span>
+          </div>
+        </div>
+      </section>
+    </main>
+    <nav class="nav-bar">
+      <div class="nav-item current" id="nav-list">
+        <span>📋</span>
+        リスト
+      </div>
+      <div class="nav-item" id="nav-achieve">
+        <span>⭐</span>
+        達成数
+      </div>
+      <div class="nav-item" id="nav-reflect">
+        <span>📝</span>
+        振り返り
+      </div>
+    </nav>
+  </div>
+  <script>
+    let items = []; // {text, checked, date}
+    let history = []; // {text, date}
+    // タブ切り替え管理
+    function switchView(key) {
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      document.getElementById('view-'+key).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('current'));
+      document.getElementById('nav-'+key).classList.add('current');
     }
-</script>
+    document.getElementById('nav-list').onclick = ()=>switchView('list');
+    document.getElementById('nav-achieve').onclick = ()=>switchView('achieve');
+    document.getElementById('nav-reflect').onclick = ()=>switchView('reflect');
+
+    function renderList() {
+      const ul = document.getElementById('success-list');
+      ul.innerHTML = "";
+      items.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = 'success-item' + (item.checked ? ' checked':'');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = item.checked;
+        checkbox.onchange = function() {
+          item.checked = this.checked;
+          if(this.checked && !item.logged){
+            item.logged = true;
+            item.date = new Date();
+            history.unshift({
+              text: item.text,
+              date: item.date
+            });
+            renderAchieve();
+          } else if(!this.checked && item.logged) {
+            item.logged = false;
+            for(let i=0;i<history.length;++i) {
+              if(history[i].text===item.text &&
+                 history[i].date.getTime && item.date && history[i].date.getTime()===item.date.getTime()) {
+                history.splice(i,1);
+                break;
+              }
+            }
+            renderAchieve();
+          }
+          renderList();
+        };
+        li.appendChild(checkbox);
+        li.appendChild(document.createTextNode(item.text));
+        const label = document.createElement('span');
+        label.textContent = '達成！';
+        label.className = 'success-label';
+        if(item.checked) label.style.display = '';
+        li.appendChild(label);
+        ul.appendChild(li);
+      });
+    }
+
+    function renderAchieve() {
+      const count = history.length;
+      document.getElementById('achieve-count').textContent = count;
+      // 今日の達成数
+      let todaycount = 0;
+      const todaystr = new Date().toLocaleDateString();
+      for(const h of history) {
+        let dt = h.date;
+        if(typeof dt === "string" && !isNaN(Date.parse(dt))) dt = new Date(dt);
+        if(dt && new Date(dt).toLocaleDateString()===todaystr) todaycount++;
+      }
+      document.getElementById('achieve-today').textContent =
+        todaycount > 0 ? `今日の達成：${todaycount}件` : "";
+
+      const ul = document.getElementById('achieve-history');
+      ul.innerHTML = "";
+      for(const h of history) {
+        const li = document.createElement('li');
+        li.className = 'achieve-hist-item';
+        li.innerHTML =
+          `<span>${h.text}</span>` +
+          `<span class="hist-date">${formatDate(h.date)}</span>`;
+        ul.appendChild(li);
+      }
+    }
+    function formatDate(dt) {
+      if(!dt) return "";
+      const dateObj = typeof dt === "string" ? new Date(dt) : dt;
+      return dateObj.getFullYear() + "/" +
+        ("0"+(dateObj.getMonth()+1)).slice(-2) + "/" +
+        ("0"+dateObj.getDate()).slice(-2) + " " +
+        ("0"+dateObj.getHours()).slice(-2) + ":" +
+        ("0"+dateObj.getMinutes()).slice(-2);
+    }
+    document.getElementById('add-form').onsubmit = function(e){
+      e.preventDefault();
+      const input = document.getElementById('input-task');
+      const text = input.value.trim();
+      if(text) {
+        items.unshift({text: text, checked: false, logged:false});
+        renderList();
+        input.value = '';
+        input.focus();
+      }
+    };
+    renderList();
+    renderAchieve();
+    document.getElementById('nav-achieve').addEventListener('click', renderAchieve);
+    document.getElementById('nav-list').addEventListener('click', renderList);
+
+    // ▼▼▼ 振り返りAIコメント
+    document.getElementById('reflect-btn').onclick = function() {
+      // コメント候補
+      const comments = [
+        "今日もよくがんばりましたね！",
+        "小さな一歩も大切な成長です。すばらしい！",
+        "できたことリストが増えてきましたね。\n自分のがんばりに自信を持ってください！",
+        "継続する力はすごい！\nどんな小さなことでも、続けることが力になります。",
+        "自分のペースを大切に、できた自分をしっかり認めてあげましょう。"
+      ];
+      // 達成数や最近の履歴に応じた簡単な動的コメント例
+      let msg = "";
+      if(history.length === 0) {
+        msg = "まだ達成した記録がありません。\nまずは一つ小さなことから始めてみましょう！";
+      } else if(history.length < 3) {
+        msg = "最初の一歩を踏み出せましたね！\nここから少しずつ積み重ねていきましょう。";
+      } else if(history.length >= 3 && history.length <= 10) {
+        msg = comments[Math.floor(Math.random()*comments.length)];
+      } else {
+        // 最近の3件
+        const recent = history.slice(0,3).map(h=>h.text).join(" / ");
+        msg = "これまでのがんばりリスト:\n" + recent + "\n素晴らしい継続力ですね！\nこれからも応援しています✨";
+      }
+      // ai顔アイコンはそのまま
+      document.getElementById('ai-comment-area').innerHTML = msg + '<span class="ai-face">🤖</span>';
+    };
+  </script>
 </body>
 </html>
- 
