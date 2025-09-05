@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>小さい成功体験アプリ（イメージ）</title>
+<style>
+
+    body {
+
+      background: #f2fbf1;
+
+      font-family: 'メイリオ', sans-serif;
+
+    }
+
+    .container {
+
+      max-width: 400px;
+
+      margin: 40px auto;
+
+      background: #fff;
+
+      border-radius: 10px;
+
+      box-shadow: 0 4px 20px #d6e5d5;
+
+      padding: 2em;
+
+    }
+
+    h1 {
+
+      text-align: center;
+
+      color: #388e3c;
+
+      margin-bottom: 1.2em;
+
+    }
+
+    form {
+
+      display: flex;
+
+      gap: 0.5em;
+
+      margin-bottom: 1.5em;
+
+    }
+
+    input[type="text"] {
+
+      flex: 1;
+
+      padding: 0.6em;
+
+      font-size: 1em;
+
+      border: 1px solid #bbe2be;
+
+      border-radius: 5px;
+
+    }
+
+    button {
+
+      background: #388e3c;
+
+      color: #fff;
+
+      border: none;
+
+      border-radius: 5px;
+
+      padding: 0.6em 1em;
+
+      font-size: 1em;
+
+      cursor: pointer;
+
+      transition: background 0.2s;
+
+    }
+
+    button:hover {
+
+      background: #25672a;
+
+    }
+
+    ul {
+
+      margin: 0;
+
+      padding: 0;
+
+      list-style: none;
+
+    }
+
+    li {
+
+      background: #f5fff4;
+
+      margin-bottom: 0.5em;
+
+      padding: 0.7em 1em;
+
+      border-radius: 6px;
+
+      display: flex;
+
+      align-items: center;
+
+      font-size: 1.05em;
+
+      border-left: 5px solid #a6e8b7;
+
+      transition: background 0.3s;
+
+    }
+
+    li.checked {
+
+      background: #e0f8eb;
+
+      text-decoration: line-through;
+
+      opacity: 0.7;
+
+    }
+
+    .success-label {
+
+      margin-left: 0.5em;
+
+      color: #388e3c;
+
+      font-weight: bold;
+
+      font-size: 0.95em;
+
+    }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>小さいことから<br>はじめよう</h1>
+<form id="add-form" autocomplete="off">
+<input type="text" id="input-task" placeholder="例: 朝ごはんを食べた" required>
+<button type="submit">追加</button>
+</form>
+<ul id="success-list">
+<!-- 成功体験リストが入ります -->
+</ul>
+</div>
+<script>
+
+    const form = document.getElementById('add-form');
+
+    const input = document.getElementById('input-task');
+
+    const list = document.getElementById('success-list');
+ 
+    form.addEventListener('submit', function(e) {
+
+      e.preventDefault();
+
+      addSuccess(input.value);
+
+      input.value = '';
+
+      input.focus();
+
+    });
+ 
+    function addSuccess(text) {
+
+      const li = document.createElement('li');
+
+      const checkbox = document.createElement('input');
+
+      checkbox.type = 'checkbox';
+
+      checkbox.style.marginRight = '0.7em';
+
+      checkbox.addEventListener('change', function () {
+
+        li.classList.toggle('checked', this.checked);
+
+      });
+
+      li.appendChild(checkbox);
+
+      li.appendChild(document.createTextNode(text));
+
+      const label = document.createElement('span');
+
+      label.textContent = '達成！';
+
+      label.className = 'success-label';
+
+      label.style.display = 'none';
+
+      li.appendChild(label);
+
+      checkbox.addEventListener('change', function () {
+
+        label.style.display = this.checked ? '' : 'none';
+
+      });
+
+      list.prepend(li);
+
+    }
+</script>
+</body>
+</html>
+ 
